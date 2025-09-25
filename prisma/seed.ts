@@ -4,9 +4,11 @@ import { getPasswordHash } from '../src/utils/hashPassword';
 const prisma = new PrismaClient();
 
 async function main() {
-  const hash = await getPasswordHash('Password1234!');
+  const hash = await getPasswordHash(
+    process.env.ADMIN_PASSWORD || 'myPassword',
+  );
   const existingAdmin = await prisma.user.findUnique({
-    where: { email: 'Admin@gmail.com' },
+    where: { email: process.env.ADMIN_EMAIL },
   });
   if (existingAdmin) {
     console.log(`Admin already exists`);
@@ -14,7 +16,7 @@ async function main() {
   }
   const admin = await prisma.user.create({
     data: {
-      email: 'Admin@gmail.com',
+      email: process.env.ADMIN_EMAIL || 'email@demo.com',
       name: 'Admin Doe',
       role: 'ADMIN',
       password: {
