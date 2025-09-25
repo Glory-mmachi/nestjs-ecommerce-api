@@ -1,0 +1,105 @@
+// schema.prisma
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String      @id @default(uuid())
+  email     String   @unique
+  name      String
+  password  Password?
+  role      Role     @default(CUSTOMER)
+  cart      Cart?
+  orders    Order[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+model Password{
+  hash String
+  userId String @unique
+  user User @relation(fields: [userId],references: [id],onDelete: Cascade)
+}
+
+model Product {
+  id          String          @id @default(uuid())
+  name        String
+  description String
+  price       Decimal      @db.Decimal(10, 2)
+  stock       Int
+  imageUrl    String?
+  cartItems   CartItem[]
+  orderItems  OrderItem[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Cart {
+  id        String        @id @default(uuid())
+  userId    String        @unique
+  user      User       @relation(fields: [userId], references: [id])
+  items     CartItem[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model CartItem {
+  id        String      @id @default(uuid())
+  cartId    String
+  productId String
+  quantity  Int      @default(1)
+  cart      Cart     @relation(fields: [cartId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
+}
+
+model Order {
+  id          String         @id @default(uuid())
+  userId      String
+  status      OrderStatus @default(PENDING)
+  totalAmount Decimal     @db.Decimal(10, 2)
+  user        User        @relation(fields: [userId], references: [id])
+  items       OrderItem[]
+  payment     Payment?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model OrderItem {
+  id        String      @id @default(uuid())
+  orderId   String
+  productId String
+  quantity  Int
+  price     Decimal  @db.Decimal(10, 2)
+  order     Order    @relation(fields: [orderId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
+}
+
+model Payment {
+  id        String        @id @default(uuid())
+  orderId   String        @unique
+  status    PayStatus
+  amount    Decimal    @db.Decimal(10, 2)
+  order     Order      @relation(fields: [orderId], references: [id])
+  createdAt DateTime   @default(now())
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  FAILED
+}
+
+enum PayStatus {
+  SUCCESS
+  FAILED
+}
