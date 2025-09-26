@@ -17,6 +17,7 @@ import {
 import { SignUpDto } from './dto/signUp.dto';
 import { AuthService } from './auth.service';
 import { AuthGuard } from './guards/auth.guard';
+import { LoginDto } from './dto/login.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -53,6 +54,39 @@ export class AuthController {
       success: 'success',
       message: 'Signup successfull',
       access_token,
+      data,
+    };
+  }
+
+  @Post('login')
+  @ApiOperation({ summary: 'Login an existing user' })
+  @ApiBody({ type: LoginDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Login successful',
+    schema: {
+      example: {
+        success: 'success',
+        message: 'Login successful',
+        access_token: 'jwt.token.here',
+        data: {
+          id: 'uuid',
+          name: 'John Doe',
+          email: 'john@example.com',
+          role: 'USER',
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid credentials',
+  })
+  async login(@Body() loginDto: LoginDto) {
+    const data = await this.authService.login(loginDto);
+    return {
+      success: 'success',
+      message: 'Login successful',
       data,
     };
   }

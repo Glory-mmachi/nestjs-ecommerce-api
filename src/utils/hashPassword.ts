@@ -5,3 +5,10 @@ export function getPasswordHash(password: string): Promise<string> {
   const rounds = isNaN(saltRounds) ? 10 : saltRounds;
   return bcrypt.hash(password, rounds);
 }
+
+export function comparePasswordHash(
+  password: string,
+  hash: string,
+): Promise<boolean> {
+  return bcrypt.compare(password, hash);
+}
