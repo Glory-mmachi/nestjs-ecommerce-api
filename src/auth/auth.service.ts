@@ -48,7 +48,7 @@ export class AuthService {
         },
       });
       //set jwt payload
-      const payload = { sub: user.id, email: user.email };
+      const payload = { sub: user.id, email: user.email, role: user.role };
 
       //send access token and user info
       return {
@@ -89,12 +89,12 @@ export class AuthService {
       }
 
       //set jwt payload
-      const payload = { sub: user.id, email: user.email };
+      const payload = { sub: user.id, email: user.email, role: user.role };
       const access_token = await this.jwtService.signAsync(payload);
 
       const userData: LoginResponseDto = {
         id: user.id,
-        name: user.name,
+        name: user.full_name,
         email: user.email,
         role: user.role,
         access_token: access_token,

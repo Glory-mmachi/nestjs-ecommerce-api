@@ -12,7 +12,7 @@ generator client {
 model User {
   id        String      @id @default(uuid())
   email     String   @unique
-  name      String
+  full_name      String?
   password  Password?
   role      Role     @default(CUSTOMER)
   cart      Cart?
@@ -30,7 +30,7 @@ model Product {
   id          String          @id @default(uuid())
   name        String
   description String
-  price       Decimal      @db.Decimal(10, 2)
+  price Float
   stock       Int
   imageUrl    String?
   cartItems   CartItem[]
