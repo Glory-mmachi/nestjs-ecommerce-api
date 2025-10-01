@@ -10,8 +10,10 @@ import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
+    PassportModule,
     PrismaModule,
-    PassportModule.register({ defaultStrategy: 'jwt' }), // 👈 add this
+    // PassportModule.register({ defaultStrategy: 'jwt' }),
+    PassportModule,
     JwtModule.register({
       global: true,
       secret: jwtConstants.secret,
@@ -20,6 +22,6 @@ import { PassportModule } from '@nestjs/passport';
   ],
   controllers: [AuthController],
   providers: [AuthService, UserService, JwtStrategy],
-  exports: [AuthService], // export if other modules need it
+  exports: [AuthService, JwtModule],
 })
 export class AuthModule {}

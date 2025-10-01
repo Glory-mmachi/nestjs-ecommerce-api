@@ -3,7 +3,7 @@ import { ProductsService } from './products.service';
 import { ProductsController } from './products.controller';
 import { PrismaModule } from 'src/prisma/prisma.module';
 import { APP_GUARD } from '@nestjs/core';
-import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { RolesGuard } from 'src/auth/guards/role.guards';
 
 @Module({
   imports: [PrismaModule],

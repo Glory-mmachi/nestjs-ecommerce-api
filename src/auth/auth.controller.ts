@@ -95,7 +95,6 @@ export class AuthController {
   @ApiBearerAuth()
   @Delete('delete')
   async delete(@Req() req: Request) {
-    console.log('User from req:', req['user']);
     const { sub } = req['user'];
     await this.authService.delete(sub);
     return {
